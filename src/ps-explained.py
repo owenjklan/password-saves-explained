@@ -1,9 +1,12 @@
 #!/usr/bin/env python3
-
+from PyQt5.QtGui import QPixmap
 from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QMainWindow, QHBoxLayout, QVBoxLayout, QGraphicsScene, \
     QGraphicsView, QSpacerItem, QSizePolicy
 # Only needed for access to command line arguments
 import sys
+
+from src.player import Player
+from src.state_editor import StateEditorWidget
 
 
 class MainWindow(QMainWindow):
@@ -20,6 +23,16 @@ class MainWindow(QMainWindow):
 
         self.mainHLayout = QHBoxLayout()
         self.mainButtonsVLayout = QVBoxLayout()
+        self.playerWidget = Player()
+        self.mainButtonsVLayout.addWidget(self.playerWidget)
+
+        self.addHPButton = QPushButton("&Add 5HP")
+        self.takeHPButton = QPushButton("&Take 5HP")
+        self.mainButtonsVLayout.addWidget(self.addHPButton)
+        self.mainButtonsVLayout.addWidget(self.takeHPButton)
+
+        self.addHPButton.clicked.connect(self.playerWidget.hp.hit_points_changed)
+
         self.mainButtonsVLayout.addItem(QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding))
         self.mainButtonsVLayout.addWidget(self.editStateButton)
         self.mainButtonsVLayout.addWidget(self.saveStateButton)
@@ -34,6 +47,13 @@ class MainWindow(QMainWindow):
         self.mainWidget.setLayout(self.mainHLayout)
         self.setCentralWidget(self.mainWidget)
 
+        # Load pixap
+        backgroundImage = QPixmap("images/background.png")
+        self.scene.addPixmap(backgroundImage)
+        self.scene.update()
+
+        self.stateEditor = StateEditorWidget()
+        self.editStateButton.clicked.connect(self.stateEditor.show)
 
 def main():
     app = QApplication(sys.argv)
