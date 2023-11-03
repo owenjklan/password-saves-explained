@@ -5,7 +5,8 @@ from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QMainWindow, QHB
 # Only needed for access to command line arguments
 import sys
 
-from src.character_entry_widget import PasswordCharacterEntry
+from src.character_entry_widget import PasswordEntry
+from src.pwd_decoder import PasswordDecoder
 
 
 class MainWindow(QMainWindow):
@@ -13,21 +14,19 @@ class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         self.setWindowTitle("Password Saves Explained - Password Entry")
-        self.pwdWidgets = []
-        for i in range(0, self.PWD_CHARS_COUNT):
-            newPwdChar = PasswordCharacterEntry(parent=self)
-            newPwdChar.redraw()
-            self.pwdWidgets.append(newPwdChar)
+        self.pwdEntryWidget = PasswordEntry()
         self.decodeButton = QPushButton("&Decode Password")
-
+        self.passwordDecoder = PasswordDecoder(pwdEntryWidget=self.pwdEntryWidget)
+        self.decodeButton.clicked.connect(self.pwdEntryWidget.updateValue)
+        self.decodeButton.clicked.connect(self.passwordDecoder.updateDecoding)
         self.mainHLayout = QHBoxLayout()
         self.mainVLayout = QVBoxLayout()
         # self.addHPButton.clicked.connect(self.playerWidget.hp.hit_points_changed)
         self.mainHLayout.setSpacing(0)
-        for w in self.pwdWidgets:
-            self.mainHLayout.addWidget(w)
-        self.mainVLayout.addLayout(self.mainHLayout)
+        self.mainVLayout.addWidget(self.pwdEntryWidget)
+        # self.mainVLayout.addLayout(self.mainHLayout)
         self.mainVLayout.addWidget(self.decodeButton)
+        self.mainVLayout.addWidget(self.passwordDecoder)
         self.mainWidget = QWidget()
         self.mainWidget.setLayout(self.mainVLayout)
         self.setCentralWidget(self.mainWidget)
