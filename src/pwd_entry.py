@@ -6,25 +6,30 @@ from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QMainWindow, QHB
 import sys
 
 from src.character_entry_widget import PasswordCharacterEntry
-from src.player import Player
-from src.state_editor import StateEditorWidget
 
 
 class MainWindow(QMainWindow):
+    PWD_CHARS_COUNT = 5
     def __init__(self):
         super().__init__()
         self.setWindowTitle("Password Saves Explained - Password Entry")
-        self.pwdWidget = PasswordCharacterEntry()
-        self.pwdWidget2 = PasswordCharacterEntry()
+        self.pwdWidgets = []
+        for i in range(0, self.PWD_CHARS_COUNT):
+            newPwdChar = PasswordCharacterEntry(parent=self)
+            newPwdChar.redraw()
+            self.pwdWidgets.append(newPwdChar)
+        self.decodeButton = QPushButton("&Decode Password")
 
         self.mainHLayout = QHBoxLayout()
-
+        self.mainVLayout = QVBoxLayout()
         # self.addHPButton.clicked.connect(self.playerWidget.hp.hit_points_changed)
         self.mainHLayout.setSpacing(0)
-        self.mainHLayout.addWidget(self.pwdWidget)
-        self.mainHLayout.addWidget(self.pwdWidget2)
+        for w in self.pwdWidgets:
+            self.mainHLayout.addWidget(w)
+        self.mainVLayout.addLayout(self.mainHLayout)
+        self.mainVLayout.addWidget(self.decodeButton)
         self.mainWidget = QWidget()
-        self.mainWidget.setLayout(self.mainHLayout)
+        self.mainWidget.setLayout(self.mainVLayout)
         self.setCentralWidget(self.mainWidget)
         self.show()
 

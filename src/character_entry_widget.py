@@ -79,3 +79,11 @@ class PasswordCharacterEntry(QWidget):
         self.scene.update()
         self.binaryString =  f"{self.value:04b}"
         self.binaryLabel.setText(self.binaryString)
+
+    def redraw(self):
+        self.scene.clear()
+        self.currentPixmap = self.alphabet_pixmaps[self.value]
+        self.scene.addPixmap(self.currentPixmap)
+        self.scene.update()
+        self.binaryString =  f"{self.value:04b}"
+        self.binaryLabel.setText(self.binaryString)
